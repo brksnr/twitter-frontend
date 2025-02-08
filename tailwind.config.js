@@ -5,6 +5,7 @@
     extend: {
       spacing: {
         'Aside': '37rem',
+        'middle': '37.5rem'
       },
       colors: {
         "blue": '#1DA1F2',
