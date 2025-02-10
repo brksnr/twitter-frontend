@@ -1,5 +1,8 @@
+import { Login } from "../pages/Login"
+import { UserBox } from "./UserBox"
+
 export function Aside(){
-        const button = "flex items-center gap-5 rounded-full w-fit pr-5 pl-2 h-12 hover:bg-darkgray text-xl font-medium"
+        const button = "flex items-center gap-5 rounded-full w-fit pr-5 pl-2 h-12 hover:bg-gray-700 text-xl font-medium"
     return (
         <>
         <div className="bg-black pt-2">
@@ -28,6 +31,7 @@ export function Aside(){
                 <p className="hidden md:flex">Gönderi yayınla</p>
                 <i className="fa-solid fa-circle-plus md:hidden"></i>
                 </button>
+                <UserBox/>
             </div>
         </ul>
         </div>

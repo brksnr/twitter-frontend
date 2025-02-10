@@ -39,7 +39,7 @@ export function Middleside(){
                 </div>
             </div>
             {/*GÖNDERİLER*/}
-            <div className="flex border-b border-gray-700 pb-3">
+            <button className="flex border-b border-gray-700 pb-3 hover:bg-gray-800">
                 <div className="pl-3  pt-4">
                     <img src="images/berksener.jpg" className="w-10 h-9 rounded-full">{/* profil gG */}</img>
                 </div>
@@ -80,7 +80,7 @@ export function Middleside(){
                         </div>
                     </div>
                 </div>
-            </div>
+            </button>
             
         </div>
         </>
