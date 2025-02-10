@@ -1,8 +1,10 @@
 export const SET_USER = "SET_USER";
 
-export const loginUser = (userData) => {
+
+
+export const setUser = (email, token) => {
     return {
         type: SET_USER,
-        payload: userData
+        payload: { email, token }
     };
 };

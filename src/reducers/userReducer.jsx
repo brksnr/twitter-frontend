@@ -4,7 +4,6 @@ import { SET_USER } from "../actions/userAction";
 const initialState = {
     user: {
       token: null,
-      username: null,
       email: null,
     }
   };
@@ -15,11 +14,10 @@ const initialState = {
             return {
                 ...state,
                 user: {
-                  token: action.payload.token,
-                  username: action.payload.username,
-                  email: action.payload.email,
+                    token: action.payload.token,
+                    email: action.payload.email,
                 },
-              };
+            };
         default:
             return state;
     }

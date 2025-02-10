@@ -71,7 +71,7 @@ export function Register() {
                         />
                     </div>
 
-                    <button type="submit" className="w-full bg-black text-white px-4 py-2 rounded" disabled={isLoading}>
+                    <button type="submit" className="w-full bg-blue text-white px-4 py-2 rounded" disabled={isLoading}>
                         {isLoading ? "Loading..." : "Sign Up"}
                     </button>
                     
