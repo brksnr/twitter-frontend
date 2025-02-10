@@ -3,12 +3,12 @@ import { SET_USER } from "../actions/userAction";
 
 const initialState = {
     user: {
-      token: null,
-      email: null,
+      token: localStorage.getItem('token') ? JSON.parse(localStorage.getItem('token')) : null,
+      email: localStorage.getItem('username') ? localStorage.getItem('username') : null,
     }
   };
 
-  const userReducer = (state = initialState, action) => {
+const userReducer = (state = initialState, action) => {
     switch (action.type) {
         case SET_USER:
             return {
@@ -22,6 +22,5 @@ const initialState = {
             return state;
     }
 };
-
 
 export default userReducer;
