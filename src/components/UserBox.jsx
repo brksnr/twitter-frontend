@@ -14,6 +14,8 @@ export function UserBox() {
       const handleLogOut = () => {
         localStorage.setItem("token", null);
         localStorage.setItem("username", null);
+        localStorage.setItem("id", null);
+
         window.location.reload();
       };
 

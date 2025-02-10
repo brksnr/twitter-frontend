@@ -5,6 +5,7 @@ const initialState = {
     user: {
       token: localStorage.getItem('token') ? JSON.parse(localStorage.getItem('token')) : null,
       email: localStorage.getItem('username') ? localStorage.getItem('username') : null,
+      id: localStorage.getItem('id') ? localStorage.getItem('id') : null,
     }
   };
 
@@ -16,6 +17,7 @@ const userReducer = (state = initialState, action) => {
                 user: {
                     token: action.payload.token,
                     email: action.payload.email,
+                    id: action.payload.id
                 },
             };
         default:

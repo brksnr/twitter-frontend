@@ -27,7 +27,8 @@ export function Login() {
             console.log(result);
             localStorage.setItem("token", JSON.stringify(result.token));
             localStorage.setItem("username", result.email);
-            dispatch(setUser(result.email, result.token));
+            localStorage.setItem("id", result.id);
+            dispatch(setUser(result.email, result.token, result.id));
             history.push("/home");
         } catch (error) {
             setError(error.message);

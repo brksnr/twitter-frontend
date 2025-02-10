@@ -32,4 +32,13 @@ export const getAllTweets = async () => {
     }
 };
 
+export const createTweet = async () => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/tweets/create`);
+        return response.data; 
+    } catch (error) {
+        throw new Error("Login failed: " + error.response?.data?.message || error.message);
+    }
+};
+
 

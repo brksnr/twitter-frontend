@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 
 export function CreateTweet(){
     const user = useSelector(state => state.user);
+    
 
     const getGravatarUrl = (email) => {
             const emailHash = md5(email.trim().toLowerCase());
