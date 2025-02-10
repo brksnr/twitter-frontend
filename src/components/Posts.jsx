@@ -4,7 +4,6 @@ import md5 from "md5";
 import { useDispatch, useSelector } from "react-redux";
 import { getTweets } from "../actions/tweetActions";
 
-
 export function Posts() {
   const [loading, setLoading] = useState(true); 
   const [error, setError] = useState(null); 
@@ -32,7 +31,7 @@ export function Posts() {
     };
 
     fetchTweets();
-  }, []);
+  }, [dispatch]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
