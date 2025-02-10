@@ -59,5 +59,23 @@ export const deleteTweet = async (tweetId, userId) => {
     }
 };
 
+export const reTweet = async (tweetId, userId) => {
+    try {
+        const response = await axios.post(`${API_BASE_URL}/retweet/tweet/${tweetId}/user/${userId}`);
+        return response.data;
+    } catch (error) {
+        throw new Error("Like tweet failed: " + error.response?.data?.message || error.message);
+    }
+};
+
+export const deleteReTweet = async (tweetId, userId) => {
+    try {
+        const response = await axios.delete(`${API_BASE_URL}/retweet/deleteTweet/${tweetId}/user/${userId}`);
+        return response.data;
+    } catch (error) {
+        throw new Error("Like tweet failed: " + error.response?.data?.message || error.message);
+    }
+};
+
 
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { deleteTweet, getAllTweets, likeTweet } from "../api";
+import { deleteReTweet, deleteTweet, getAllTweets, likeTweet, reTweet } from "../api";
 import md5 from "md5";
 import { useDispatch, useSelector } from "react-redux";
 import { getTweets } from "../actions/tweetActions";
@@ -15,7 +15,30 @@ export function Posts() {
     const emailHash = md5(email.trim().toLowerCase());
     return `https://www.gravatar.com/avatar/${emailHash}?d=identicon`;
   };
+    /* LISTED TWITS */
+    useEffect(() => {
+        const fetchTweets = async () => {
+          try {
+            const data = await getAllTweets();
+            dispatch(getTweets(data));
+            console.log(data);
+          } catch (err) {
+            setError("Error fetching tweets");
+            console.error(err);
+          } finally {
+            setLoading(false);
+          }
+        };
+    
+        fetchTweets();
+      }, [dispatch]);
+    
+      /* LISTED TWITS */
 
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{error}</p>;
+
+  /* LİKE / DİSKLE */
   const handleLike = async (tweet) => {
     try {
       const tweetId = tweet.id; 
@@ -36,31 +59,44 @@ export function Posts() {
       console.error("Error handling like/dislike", err);
     }
   };
-  
-
   const isLikedByUser = (tweet) => {
     return tweet.likes.includes(localStorage.getItem('username'));
   };
+    /* LİKE / DİSKLE */
 
-  useEffect(() => {
-    const fetchTweets = async () => {
-      try {
-        const data = await getAllTweets();
-        dispatch(getTweets(data));
-        console.log(data);
-      } catch (err) {
-        setError("Error fetching tweets");
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
+    
 
-    fetchTweets();
-  }, [dispatch]);
+    /* retweet */
+    const handleReTweet = async (tweet) => {
+        try {
+          const tweetId = tweet.id;
+          if (isRetweetedByUser(tweet)) {
+            await deleteReTweet(tweetId, userId);  
+            console.log(`Tweet ${tweetId} unretweeted by user ${userId}`);
+          } else {
+            await reTweet(tweetId, userId);
+            console.log(`Tweet ${tweetId} retweeted by user ${userId}`);
+          }
+          setLoading(true); 
+          const data = await getAllTweets(); 
+          dispatch(getTweets(data)); 
+          setLoading(false); 
+        } catch (err) {
+          console.error("Error handling retweet", err);
+        }
+      };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
+      const isRetweetedByUser = (tweet) => {
+        return tweet.retweets.includes(localStorage.getItem('username')); 
+      };
+      
+        /* retweet */
+
+
+
+
+
+
 
   return (
     <>
@@ -78,7 +114,7 @@ export function Posts() {
               <div className="flex gap-2 items-center">
                 <p className="font-bold text-sm">{tweet.user.email}</p>
                 <p className="text-sm text-darkgray">{tweet.user.username}</p>
-                <point>.</point>
+                <p>.</p>
                 <p className="text-sm text-darkgray">{tweet.timestamp}</p>
               </div>
               <div>
@@ -98,9 +134,12 @@ export function Posts() {
                 <p>{tweet.comments.length}</p>
               </div>
               <div className="flex items-center">
-                <button className="hover:bg-blue w-7 h-7 rounded-full flex justify-center items-center">
-                  <i className="fa-solid fa-retweet"></i>
+                <button
+                    className={`hover:bg-blue w-7 h-7 rounded-full flex justify-center items-center ${isRetweetedByUser(tweet) ? 'text-green-500' : 'text-darkgray'}`}
+                    onClick={() => handleReTweet(tweet)}>
+                    <i className="fa-solid fa-retweet"></i>
                 </button>
+
                 <p>{tweet.retweets.length}</p>
               </div>
               <div className="flex items-center">
