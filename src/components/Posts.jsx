@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getAllTweets, likeTweet } from "../api";
+import { deleteTweet, getAllTweets, likeTweet } from "../api";
 import md5 from "md5";
 import { useDispatch, useSelector } from "react-redux";
 import { getTweets } from "../actions/tweetActions";
@@ -16,17 +16,30 @@ export function Posts() {
     return `https://www.gravatar.com/avatar/${emailHash}?d=identicon`;
   };
 
-  const handleLike = async (tweetId) => {
+  const handleLike = async (tweet) => {
     try {
-      await likeTweet(tweetId, userId); 
-      console.log(`Tweet ${tweetId} liked by user ${userId}`);
+      const tweetId = tweet.id; 
+  
+      if (isLikedByUser(tweet)) {
+        await deleteTweet(tweetId, userId);  
+        console.log(`Tweet ${tweetId} unliked by user ${userId}`);
+      } else {
+        await likeTweet(tweetId, userId); 
+        console.log(`Tweet ${tweetId} liked by user ${userId}`);
+      }
+  
+      setLoading(true); 
+      const data = await getAllTweets(); 
+      dispatch(getTweets(data)); 
+      setLoading(false);
     } catch (err) {
-      console.error("Error liking tweet", err);
+      console.error("Error handling like/dislike", err);
     }
   };
+  
 
   const isLikedByUser = (tweet) => {
-    return tweet.likes.includes(localStorage.getItem('username')); 
+    return tweet.likes.includes(localStorage.getItem('username'));
   };
 
   useEffect(() => {
@@ -91,11 +104,10 @@ export function Posts() {
                 <p>{tweet.retweets.length}</p>
               </div>
               <div className="flex items-center">
-                <button
-                  className={`hover:bg-blue w-7 h-7 rounded-full flex justify-center items-center ${isLikedByUser(tweet) ? 'text-red-500' : 'text-darkgray'}`}
-                  onClick={() => handleLike(tweet.id)}
-                >
-                  <i class="fa-solid fa-heart"></i>
+              <button
+                    className={`hover:bg-blue w-7 h-7 rounded-full flex justify-center items-center ${isLikedByUser(tweet) ? 'text-red-500' : 'text-darkgray'}`}
+                    onClick={() => handleLike(tweet)}>
+                    <i className="fa-solid fa-heart"></i>
                 </button>
                 <p>{tweet.likes.length}</p>
               </div>
