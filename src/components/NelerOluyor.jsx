@@ -5,7 +5,7 @@ export function NelerOluyor(){
                 <h1 className="px-2 text-xl font-bold">NELER OLUYOR?</h1>
                 <button className="hover:bg-gray-700 px-2">
                     <div className="flex justify-between">
-                        <div className="flex gap-2 text-xs text-darkgray text-xs">
+                        <div className="flex gap-2 text-xs text-darkgray">
                             <p>SPOR</p>
                             <p>GÜNDEMDEKİLER</p>
                         </div>
