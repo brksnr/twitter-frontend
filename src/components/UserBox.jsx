@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 
 export function UserBox() {
     const user = useSelector(state => state.user);
-    console.log(user.user.token);
 
     const getGravatarUrl = (email) => {
         const emailHash = md5(email.trim().toLowerCase());
