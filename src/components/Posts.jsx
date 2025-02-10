@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { getAllTweets } from "../api";
 import md5 from "md5";
+import { useDispatch, useSelector } from "react-redux";
+import { getTweets } from "../actions/tweetActions";
+
 
 export function Posts() {
-  const [tweets, setTweets] = useState([]); 
   const [loading, setLoading] = useState(true); 
   const [error, setError] = useState(null); 
+  const tweets = useSelector(state => state.tweets.tweets);
+  const dispatch = useDispatch();
+  console.log(tweets);
 
   const getGravatarUrl = (email) => {
     const emailHash = md5(email.trim().toLowerCase());
@@ -16,7 +21,7 @@ export function Posts() {
     const fetchTweets = async () => {
       try {
         const data = await getAllTweets(); 
-        setTweets(data); 
+        dispatch(getTweets(data));
         console.log(data);
       } catch (err) {
         setError("Error fetching tweets");
