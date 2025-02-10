@@ -11,8 +11,10 @@
     "start": "PORT=3200 react-scripts start"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.5.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-redux": "^9.2.0",
     "react-router-dom": "^5.3.4"
   },
   "devDependencies": {
