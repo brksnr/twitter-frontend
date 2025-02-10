@@ -1,25 +1,38 @@
 import React, { useEffect, useState } from "react";
-import { getAllTweets } from "../api";
+import { getAllTweets, likeTweet } from "../api";
 import md5 from "md5";
 import { useDispatch, useSelector } from "react-redux";
 import { getTweets } from "../actions/tweetActions";
 
 export function Posts() {
-  const [loading, setLoading] = useState(true); 
-  const [error, setError] = useState(null); 
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const tweets = useSelector(state => state.tweets.tweets);
   const dispatch = useDispatch();
-  console.log(tweets);
+  const userId = localStorage.getItem('id');
 
   const getGravatarUrl = (email) => {
     const emailHash = md5(email.trim().toLowerCase());
     return `https://www.gravatar.com/avatar/${emailHash}?d=identicon`;
   };
-  
+
+  const handleLike = async (tweetId) => {
+    try {
+      await likeTweet(tweetId, userId); 
+      console.log(`Tweet ${tweetId} liked by user ${userId}`);
+    } catch (err) {
+      console.error("Error liking tweet", err);
+    }
+  };
+
+  const isLikedByUser = (tweet) => {
+    return tweet.likes.includes(localStorage.getItem('username')); 
+  };
+
   useEffect(() => {
     const fetchTweets = async () => {
       try {
-        const data = await getAllTweets(); 
+        const data = await getAllTweets();
         dispatch(getTweets(data));
         console.log(data);
       } catch (err) {
@@ -69,25 +82,28 @@ export function Posts() {
                 <button className="hover:bg-blue w-7 h-7 rounded-full flex justify-center items-center">
                   <i className="fa-regular fa-comment"></i>
                 </button>
-                <p>{tweet.comments.length}</p> 
+                <p>{tweet.comments.length}</p>
               </div>
               <div className="flex items-center">
                 <button className="hover:bg-blue w-7 h-7 rounded-full flex justify-center items-center">
                   <i className="fa-solid fa-retweet"></i>
                 </button>
-                <p>{tweet.retweets.length}</p> 
+                <p>{tweet.retweets.length}</p>
               </div>
               <div className="flex items-center">
-                <button className="hover:bg-blue w-7 h-7 rounded-full flex justify-center items-center">
-                <i class="fa-regular fa-heart"></i>
+                <button
+                  className={`hover:bg-blue w-7 h-7 rounded-full flex justify-center items-center ${isLikedByUser(tweet) ? 'text-red-500' : 'text-darkgray'}`}
+                  onClick={() => handleLike(tweet.id)}
+                >
+                  <i class="fa-solid fa-heart"></i>
                 </button>
-                <p>{tweet.likes.length}</p> 
+                <p>{tweet.likes.length}</p>
               </div>
               <div className="flex items-center">
                 <button className="hover:bg-blue w-7 h-7 rounded-full flex justify-center items-center">
                   <i className="fa-solid fa-chart-column"></i>
                 </button>
-                <p>27B</p> 
+                <p>27B</p>
               </div>
               <div className="flex gap-3">
                 <button className="hover:bg-blue w-7 h-7 rounded-full flex justify-center items-center">

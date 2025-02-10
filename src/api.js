@@ -41,4 +41,14 @@ export const createTweet = async () => {
     }
 };
 
+export const likeTweet = async (tweetId, userId) => {
+    try {
+        const response = await axios.post(`${API_BASE_URL}/likes/tweet/${tweetId}/user/${userId}`);
+        return response.data;
+    } catch (error) {
+        throw new Error("Like tweet failed: " + error.response?.data?.message || error.message);
+    }
+};
+
+
 
