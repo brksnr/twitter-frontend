@@ -54,7 +54,7 @@ export const likeTweet = async (tweetId, userId) => {
 
 export const deleteTweet = async (tweetId, userId) => {
     try {
-        const response = await axios.delete(`${API_BASE_URL}/likes/tweet/${tweetId}/user/${userId}`);
+        const response = await axios.delete(`${API_BASE_URL}/tweets/user/${userId}/tweet/${tweetId}`);
         return response.data;
     } catch (error) {
         throw new Error("Like tweet failed: " + error.response?.data?.message || error.message);

@@ -10,6 +10,7 @@ export function CreateTweet() {
   const [error, setError] = useState(null);
   const user = useSelector(state => state.user);
   const userId = localStorage.getItem("id"); 
+  console.log(user);
   
   const getGravatarUrl = (email) => {
     const emailHash = md5(email.trim().toLowerCase());
@@ -35,6 +36,7 @@ export function CreateTweet() {
       if (response) {
         console.log("Tweet sent successfully", response);
         setTweetContent("");
+        window.location.reload();
       }
     } catch (err) {
       setError("Error sending tweet");

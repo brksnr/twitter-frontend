@@ -26,7 +26,7 @@ export function Login() {
             setSuccessMessage("Login successful!");
             console.log(result);
             localStorage.setItem("token", JSON.stringify(result.token));
-            localStorage.setItem("username", result.email);
+            localStorage.setItem("email", result.email);
             localStorage.setItem("id", result.id);
             dispatch(setUser(result.email, result.token, result.id));
             history.push("/home");
