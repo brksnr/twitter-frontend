@@ -3,6 +3,7 @@ import './App.css'
 import { HomePage } from './pages/HomePage'
 import { Register } from './pages/Register'
 import { Login } from './pages/Login'
+import { TweetDetail } from './components/TweetDetail'
 
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
               <Route path="/home" component={HomePage} />
               <Route path="/register" component={Register} />
               <Route path="/login" component={Login} />
+              <Route path="/tweet/:tweetId" component={TweetDetail} />
           </Switch>
       </Router>
     </>

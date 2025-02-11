@@ -1,5 +1,3 @@
-import md5 from "md5";
-import { useSelector } from "react-redux";
 import { Posts } from "./Posts";
 import { CreateTweet } from "./createTweet";
 
@@ -12,7 +10,7 @@ export function Middleside(){
             {/*SANA OZEL*/}
             <div className="flex justify-between">
                     <button className="border-b border-gray-700 w-full flex items-center justify-center h-14 hover:bg-darkgray">
-                    Sana özel
+                        Sana özel
                     </button>
                     <button className="border-b border-gray-700 w-full flex items-center justify-center h-14 hover:bg-darkgray">
                         Takip

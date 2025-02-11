@@ -1,0 +1,161 @@
+import { useParams } from "react-router-dom/cjs/react-router-dom.min";
+import { Aside } from "./Aside";
+import { Rightside } from "./Rightside";
+import { useEffect, useState } from "react";
+import { commentToTweet, tweetDetail } from "../api";
+
+export function TweetDetail(){
+    const { tweetId } = useParams();
+    const [tweet, setTweet] = useState(null);
+    const [comment, setComment] = useState("");
+    const userId = localStorage.getItem("id"); 
+
+    useEffect(() => {
+        const fetchTweet = async () => {
+          try {
+            const data = await tweetDetail(tweetId);
+            
+            setTweet(data);
+            console.log(data);
+          } catch (error) {
+            console.error("Tweet fetch error:", error);
+          }
+        };
+    
+        fetchTweet();
+      }, [tweetId]);
+
+      const handleCommentSubmit = async () => {
+        if (!comment.trim()) return;
+        try {
+          const response = await commentToTweet(tweetId, userId, { comment });
+          setTweet((prev) => ({
+            ...prev,
+            comments: [...prev.comments, response],
+          }));
+          setComment("");
+          window.location.reload();
+        } catch (error) {
+          console.error("Yorum ekleme hatası:", error);
+        }
+      };
+
+    const handleGoBack = () => {
+        window.history.back();
+    }
+
+    return (
+        <>
+        <div className="flex bg-black">
+        <Aside/>
+        <div className="border border-gray-700 sm:w-middle flex flex-col text-white bg-black">
+            {/* GÖNDERİ */}
+            <button className="text-left flex items-center gap-5 pl-5 h-16">
+                <i onClick={handleGoBack} className="fa-solid fa-arrow-left hover:bg-gray-700 rounded-full w-10 h-10 items-center justify-center flex"></i>
+                <p className="font-bold text-xl">Gönderi</p>
+            </button>
+
+            {/* TWEET */}
+        <div className="pl-5 pr-5">
+                <div className="flex justify-between items-center">
+                    <div className="flex gap-2 items-center">
+                        <img src="/images/berksener.jpg" className="h-10 w-10 rounded-full"></img>
+                        <div>
+                            <p>username</p>
+                            <p>@username</p>
+                        </div>
+                    </div>
+                    <div>
+                       <button className="hover:bg-gray-700 rounded-full w-10 h-10 items-center justify-center flex">
+                        <i className="fa-solid fa-ellipsis"></i></button>
+                    </div>
+                </div>
+                <div className="mt-5">
+                    <p className="w-full min-h-20 ">
+                    {tweet ? tweet.content : "Tweet Yükleniyor!"}
+                    </p>
+
+                    <p className="py-5 text-darkgray">{tweet ? tweet.createdAt : "Tweet Yükleniyor!"}</p>
+                </div>
+
+                <div className="border-b border-t border-gray-700 flex justify-between text-xl py-3 text-darkgray">
+                <button className="flex gap-1">
+                  <i className="fa-regular fa-comment hover:bg-blue w-7 h-7 rounded-full flex justify-center items-center"></i>
+                  {tweet ? tweet.comments.length : "Tweet Yükleniyor!"}
+                </button>
+                <button className="flex gap-1">
+                    <i className="fa-solid fa-retweet hover:bg-green-500 w-7 h-7 rounded-full flex justify-center items-center"></i>
+                    {tweet ? tweet.retweets.length : "Tweet Yükleniyor!"}
+                </button>
+                <button className="flex gap-1">
+                    <i className="fa-solid fa-heart hover:bg-red-500 w-7 h-7 rounded-full flex justify-center items-center"></i>
+                    {tweet ? tweet.likes.length : "Tweet Yükleniyor!"}
+                </button>
+                <button className="hover:bg-blue w-7 h-7 rounded-full flex justify-center items-center">
+                  <i className="fa-solid fa-chart-column"></i>
+                </button>
+                <button className="hover:bg-blue w-7 h-7 rounded-full flex justify-center items-center">
+                  <i className="fa-regular fa-bookmark"></i>
+                </button>
+                </div>
+
+                <div className="flex items-center py-5 gap-2">
+                    <img src="/images/berksener.jpg" className="h-10 w-14 rounded-full"></img>
+                    <div className="w-full">
+                        <textarea
+                        placeholder="Neler Oluyor"
+                        className="max-h-20 min-h-20 w-full bg-black px-3 pt-5 text-xl resize-none"
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
+                        />
+                    </div>
+                    <button 
+                    onClick={handleCommentSubmit}
+                    className="bg-white text-black rounded-full w-24 h-10">
+                        Yanıtla
+                    </button>
+                </div>
+        </div>
+
+        {/* YORUMLAR */}
+
+            {tweet ? [...tweet.comments].reverse().map((comment) => (
+                <div key={comment.id} className="flex border-b border-t border-gray-700 pb-3 hover:bg-gray-800">
+                    <div className="pl-3 pt-4">
+                     <img className="w-10 h-9 rounded-full" alt="profile" />
+                    </div>
+            <div className="w-full pt-5 pl-2 flex flex-col gap-2 pr-2">
+            <div className="flex justify-between items-center w-full">
+                <div className="flex gap-2 items-center">
+                  <p className="font-bold text-sm">Kullanıcı Adı</p>
+                  <p className="text-sm text-darkgray">@kullaniciadi</p>
+              </div>
+             <div>
+                  <button>
+                   <i className="text-darkgray fa-solid fa-ellipsis hover:bg-blue w-7 h-7 rounded-full flex justify-center items-center"></i>
+               </button>
+              </div>
+             </div>
+              <div className="text-start">
+                <p>{comment.comment}</p>
+           </div>
+              <div className="flex justify-between">
+                <button className="hover:bg-blue w-7 h-7 rounded-full flex justify-center items-center">
+                <i className="fa-regular fa-comment"></i>
+                </button>
+               <button className="hover:bg-green-500 w-7 h-7 rounded-full flex justify-center items-center">
+                  <i className="fa-solid fa-retweet"></i>
+             </button>
+                <button className="hover:bg-red-500 w-7 h-7 rounded-full flex justify-center items-center">
+                  <i className="fa-solid fa-heart"></i>
+             </button>
+            </div>
+          </div>
+         </div>
+        )) : "Yükleniyor"}    
+        </div>
+        <Rightside/>
+        </div>
+        </>
+    )
+}

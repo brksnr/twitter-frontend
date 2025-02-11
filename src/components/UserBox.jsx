@@ -22,12 +22,12 @@ export function UserBox() {
     if (user.user.token && user.user.email) {
         return (
             <>
-                <button className="flex items-center justify-between w-full rounded-full mt-12 px-2 py-7 h-12 hover:bg-gray-700 text-xl font-medium">
+                <button className="flex flex-col md:flex-row items-center justify-between w-10 h-24 md:w-full rounded-full md:mt-12 md:px-2 md:py-7 md:h-12 hover:bg-gray-700 text-xl font-medium">
                     <div className="flex items-center gap-1">
                         <img src={getGravatarUrl(user.user.email)} className="w-9 h-9 rounded-full" alt="Profile" />
                         <div className="text-start">
-                            <p className="font-bold text-base">{user.user.email}</p>
-                            <p className="text-base text-darkgray">@{user.user.email.split('@')[0]}</p>
+                            <p className="hidden md:flex font-bold text-base">{user.user.email}</p>
+                            <p className=" hidden md:flex  text-base text-darkgray">@{user.user.email.split('@')[0]}</p>
                         </div>
                     </div>
                     <div>

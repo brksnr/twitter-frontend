@@ -3,6 +3,7 @@ import { deleteReTweet, deleteTweet, getAllTweets, likeTweet, reTweet } from "..
 import md5 from "md5";
 import { useDispatch, useSelector } from "react-redux";
 import { getTweets } from "../actions/tweetActions";
+import { useHistory } from "react-router-dom";
 
 export function Posts() {
   const [loading, setLoading] = useState(true);
@@ -10,6 +11,7 @@ export function Posts() {
   const tweets = useSelector(state => state.tweets.tweets);
   const dispatch = useDispatch();
   const userId = localStorage.getItem('id');
+  const history = useHistory();
 
   const getGravatarUrl = (email) => {
     const emailHash = md5(email.trim().toLowerCase());
@@ -89,19 +91,22 @@ export function Posts() {
       const isRetweetedByUser = (tweet) => {
         return tweet.retweets.includes(localStorage.getItem('username')); 
       };
-      
         /* retweet */
 
 
-
-
-
-
+        /* GO DETAILS */
+        const handleTweetClick = (tweetId) => {
+          history.push(`/tweet/${tweetId}`);
+      };
+        /* GO DETAILS */
 
   return (
     <>
       {tweets.map((tweet) => (
-        <button key={tweet.id} className="flex border-b border-gray-700 pb-3 hover:bg-gray-800">
+        <button 
+        key={tweet.id} className="flex border-b border-gray-700 pb-3 hover:bg-gray-800"
+        onClick={() => handleTweetClick(tweet.id)}
+        >
           <div className="pl-3 pt-4">
             <img
               src={getGravatarUrl(tweet.user.email)}
