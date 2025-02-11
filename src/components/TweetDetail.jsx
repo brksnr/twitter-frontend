@@ -11,6 +11,7 @@ export function TweetDetail(){
     const [comment, setComment] = useState("");
     const userId = localStorage.getItem("id"); 
     const userEmail = localStorage.getItem('email');
+    console.log("tweet:",tweet);
 
      const getGravatarUrl = (email) => {
         const emailHash = md5(email.trim().toLowerCase());
@@ -66,10 +67,11 @@ export function TweetDetail(){
         <div className="pl-5 pr-5">
                 <div className="flex justify-between items-center">
                     <div className="flex gap-2 items-center">
-                        <img src="/images/berksener.jpg" className="h-10 w-10 rounded-full"></img>
+                        <img 
+                        src={getGravatarUrl(tweet?.user?.email || "")} className="h-10 w-10 rounded-full"></img>
                         <div>
-                            <p>username</p>
-                            <p>@username</p>
+                            <p className="font-bold text-sm">{tweet?.user?.email || ""}</p>
+                            <p className="text-sm text-darkgray">@{tweet?.user?.username || ""}</p>
                         </div>
                     </div>
                     <div>
