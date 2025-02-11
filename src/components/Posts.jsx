@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { deleteReTweet, deleteTweet, getAllTweets, likeTweet, reTweet } from "../api";
+import { deleteLike, deleteReTweet, deleteTweet, getAllTweets, likeTweet, reTweet, updateTweet } from "../api";
 import md5 from "md5";
 import { useDispatch, useSelector } from "react-redux";
 import { getTweets } from "../actions/tweetActions";
@@ -11,8 +11,10 @@ export function Posts() {
   const tweets = useSelector(state => state.tweets.tweets);
   const dispatch = useDispatch();
   const userId = localStorage.getItem('id');
-  const userEmail = localStorage.getItem('email'); // Kullanıcının email adresini al
+  const userEmail = localStorage.getItem('email');
   const history = useHistory();
+  const [editingTweet, setEditingTweet] = useState(null);
+const [newTweetContent, setNewTweetContent] = useState("");
 
   const getGravatarUrl = (email) => {
     const emailHash = md5(email.trim().toLowerCase());
@@ -46,7 +48,7 @@ export function Posts() {
       const tweetId = tweet.id; 
 
       if (isLikedByUser(tweet)) {
-        await deleteTweet(tweetId, userId);  
+        await deleteLike(tweetId, userId);  
         console.log(`Tweet ${tweetId} unliked by user ${userId}`);
       } else {
         await likeTweet(tweetId, userId); 
@@ -63,7 +65,7 @@ export function Posts() {
   };
 
   const isLikedByUser = (tweet) => {
-    return tweet.likes.includes(localStorage.getItem('username'));
+    return tweet.likes.includes(localStorage.getItem('email'));
   };
   /* LİKE / DİSKLE */
 
@@ -88,7 +90,7 @@ export function Posts() {
   };
 
   const isRetweetedByUser = (tweet) => {
-    return tweet.retweets.includes(localStorage.getItem('username')); 
+    return tweet.retweets.includes(localStorage.getItem('email')); 
   };
   /* retweet */
 
@@ -111,11 +113,63 @@ export function Posts() {
       console.error("Error deleting tweet", err);
     }
   };
-
   /* DELETE TWEET */
+
+  /* TWEET EDIT */
+  const handleEditTweet = (tweet) => {
+    setEditingTweet(tweet);
+    setNewTweetContent(tweet.content); 
+  };
+
+  const handleUpdateTweet = async () => {
+    try {
+      const tweetData = { content: newTweetContent };
+      await updateTweet(userId, editingTweet.id, tweetData);  
+      setEditingTweet(null); 
+      setNewTweetContent("");
+      window.location.reload();
+    } catch (err) {
+      console.error("Tweet güncellenirken hata oluştu", err);
+    }
+  };
+  /* TWEET EDIT */
+
 
   return (
     <>
+    {editingTweet && (
+  <div 
+    className="fixed inset-0 bg-gray-700 bg-opacity-50 flex justify-center items-center z-50 text-white"
+    onClick={() => setEditingTweet(null)} // Modal dışına tıklandığında kapanacak
+  >
+    <div 
+      className="bg-gray-700 p-6 rounded-lg shadow-lg w-full max-w-lg" 
+      onClick={(e) => e.stopPropagation()} // Modal içine tıklanmasını engeller
+    >
+      <h2 className="text-2xl font-bold mb-4">Tweet'i Düzenle</h2>
+      <textarea
+        value={newTweetContent}
+        onChange={(e) => setNewTweetContent(e.target.value)}
+        className="w-full h-32 p-3 border border-gray-800 bg-gray-700 rounded-md mb-4 resize-none"
+      />
+      <div className="flex justify-end gap-4">
+        <button 
+          onClick={handleUpdateTweet} 
+          className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+        >
+          Tweet'i Güncelle
+        </button>
+        <button 
+          onClick={() => setEditingTweet(null)} 
+          className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+        >
+          İptal
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
       {[...tweets].reverse().map((tweet) => (
         <button 
           key={tweet.id} 
@@ -178,9 +232,15 @@ export function Posts() {
                 <p>27B</p>
               </div>
               <div className="flex gap-3">
-                <button className="hover:bg-blue w-7 h-7 rounded-full flex justify-center items-center">
-                <i class="fa-regular fa-pen-to-square"></i>
+              {tweet.user.email === userEmail && (
+                <button 
+                  className="hover:bg-blue w-7 h-7 rounded-full flex justify-center items-center"
+                  onClick={() => handleEditTweet(tweet)}
+                  >
+                  <i className="fa-regular fa-pen-to-square"></i>
                 </button>
+              )}
+              
                 <button className="hover:bg-blue w-7 h-7 rounded-full flex justify-center items-center">
                   <i className="fa-solid fa-arrow-up-from-bracket"></i>
                 </button>
@@ -197,6 +257,7 @@ export function Posts() {
           </div>
         </button>
       ))}
+              
     </>
   );
 }

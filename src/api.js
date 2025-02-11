@@ -61,6 +61,15 @@ export const deleteTweet = async (tweetId, userId) => {
     }
 };
 
+export const deleteLike = async (tweetId, userId) => {
+    try {
+        const response = await axios.delete(`${API_BASE_URL}/likes/tweet/${tweetId}/user/${userId}`);
+        return response.data;
+    } catch (error) {
+        throw new Error("Like tweet failed: " + error.response?.data?.message || error.message);
+    }
+};
+
 export const reTweet = async (tweetId, userId) => {
     try {
         const response = await axios.post(`${API_BASE_URL}/retweet/tweet/${tweetId}/user/${userId}`);
@@ -97,6 +106,15 @@ export const commentToTweet = async (tweetId, userId, commentData) => {
         return response.data;
     } catch (error) {
         throw new Error("Like tweet failed: " + error.response?.data?.message || error.message);
+    }
+};
+
+export const updateTweet = async (userId, tweetId, tweetData) => {
+    try {
+        const response = await axios.put(`${API_BASE_URL}/tweets/user/${userId}/updatetweet/${tweetId}`, tweetData);
+        return response.data;
+    } catch (error) {
+        throw new Error("Tweet creation failed: " + error.response?.data?.message || error.message);
     }
 };
 

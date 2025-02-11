@@ -3,12 +3,19 @@ import { Aside } from "./Aside";
 import { Rightside } from "./Rightside";
 import { useEffect, useState } from "react";
 import { commentToTweet, tweetDetail } from "../api";
+import md5 from "md5";
 
 export function TweetDetail(){
     const { tweetId } = useParams();
     const [tweet, setTweet] = useState(null);
     const [comment, setComment] = useState("");
     const userId = localStorage.getItem("id"); 
+    const userEmail = localStorage.getItem('email');
+
+     const getGravatarUrl = (email) => {
+        const emailHash = md5(email.trim().toLowerCase());
+        return `https://www.gravatar.com/avatar/${emailHash}?d=identicon`;
+      };
 
     useEffect(() => {
         const fetchTweet = async () => {
@@ -100,7 +107,8 @@ export function TweetDetail(){
                 </div>
 
                 <div className="flex items-center py-5 gap-2">
-                    <img src="/images/berksener.jpg" className="h-10 w-14 rounded-full"></img>
+                    <img 
+                    src={getGravatarUrl(userEmail)} className="h-10 w-14 rounded-full"></img>
                     <div className="w-full">
                         <textarea
                         placeholder="Neler Oluyor"
@@ -122,13 +130,15 @@ export function TweetDetail(){
             {tweet ? [...tweet.comments].reverse().map((comment) => (
                 <div key={comment.id} className="flex border-b border-t border-gray-700 pb-3 hover:bg-gray-800">
                     <div className="pl-3 pt-4">
-                     <img className="w-10 h-9 rounded-full" alt="profile" />
+                     <img 
+                     src={getGravatarUrl(comment.user?.email)}
+                     className="w-10 h-9 rounded-full" alt="profile" />
                     </div>
             <div className="w-full pt-5 pl-2 flex flex-col gap-2 pr-2">
             <div className="flex justify-between items-center w-full">
                 <div className="flex gap-2 items-center">
-                  <p className="font-bold text-sm">Kullanıcı Adı</p>
-                  <p className="text-sm text-darkgray">@kullaniciadi</p>
+                  <p className="font-bold text-sm">{comment.user?.email || "Bilinmeyen Kullanıcı"}</p>
+                  <p className="text-sm text-darkgray">@{comment.user?.username || "Bilinmeyen Kullanıcı"}</p>
               </div>
              <div>
                   <button>
