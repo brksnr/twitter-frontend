@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 import { Aside } from "./Aside";
 import { Rightside } from "./Rightside";
 import { useEffect, useState } from "react";
-import { commentToTweet, tweetDetail } from "../api";
+import { commentToTweet, deleteComment, tweetDetail, updateComment } from "../api";
 import md5 from "md5";
 
 export function TweetDetail(){
@@ -11,20 +11,47 @@ export function TweetDetail(){
     const [comment, setComment] = useState("");
     const userId = localStorage.getItem("id"); 
     const userEmail = localStorage.getItem('email');
-    console.log("tweet:",tweet);
+    const [editingComment, setEditingComment] = useState(null);
+    const [newCommentContent, setNewCommentContent] = useState("");
 
-     const getGravatarUrl = (email) => {
-        const emailHash = md5(email.trim().toLowerCase());
-        return `https://www.gravatar.com/avatar/${emailHash}?d=identicon`;
-      };
+      const handleEditComment = (comment) => {
+        setEditingComment(comment);
+        setNewCommentContent(comment.comment);
+      };      
+
+      const handleUpdateComment = async () => {
+        try {
+            const tweetData = { comment: newCommentContent };
+            await updateComment(userId, tweetId, editingComment.id, tweetData);  
+            setEditingComment(null); 
+            setNewCommentContent(""); 
+            window.location.reload();
+        } catch (err) {
+            console.error("Tweet güncellenirken hata oluştu", err);
+        }
+    };
+
+    const handleDeleteComment = async (commentId, tweetId) => {
+      try {
+          await deleteComment(userId, tweetId, commentId); 
+          window.location.reload();
+      } catch (err) {
+          console.error("Yorum silinirken hata oluştu:", err);
+      }
+  };
+  
+
+    const getGravatarUrl = (email) => {
+            const emailHash = md5(email.trim().toLowerCase());
+            return `https://www.gravatar.com/avatar/${emailHash}?d=identicon`;
+          };
+
 
     useEffect(() => {
         const fetchTweet = async () => {
           try {
             const data = await tweetDetail(tweetId);
-            
             setTweet(data);
-            console.log(data);
           } catch (error) {
             console.error("Tweet fetch error:", error);
           }
@@ -54,6 +81,38 @@ export function TweetDetail(){
 
     return (
         <>
+        {editingComment && (
+  <div 
+    className="fixed inset-0 bg-gray-700 bg-opacity-50 flex justify-center items-center z-50 text-white"
+    onClick={() => setEditingComment(null)} 
+  >
+    <div 
+      className="bg-gray-700 p-6 rounded-lg shadow-lg w-full max-w-lg" 
+      onClick={(e) => e.stopPropagation()}
+    >
+      <h2 className="text-2xl font-bold mb-4">Yorumu Düzenle</h2>
+      <textarea
+        value={newCommentContent} 
+        onChange={(e) => setNewCommentContent(e.target.value)}  
+        className="w-full h-32 p-3 border border-gray-800 bg-gray-700 rounded-md mb-4 resize-none"
+      />
+      <div className="flex justify-end gap-4">
+        <button 
+          onClick={handleUpdateComment} 
+          className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+        >
+          Güncelle
+        </button>
+        <button 
+          onClick={() => setEditingComment(null)}  
+          className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+        >
+          İptal
+        </button>
+      </div>
+    </div>
+  </div>
+)}
         <div className="flex bg-black">
         <Aside/>
         <div className="border border-gray-700 sm:w-middle flex flex-col text-white bg-black">
@@ -80,7 +139,7 @@ export function TweetDetail(){
                     </div>
                 </div>
                 <div className="mt-5">
-                    <p className="w-full min-h-20 ">
+                    <p className="w-full">
                     {tweet ? tweet.content : "Tweet Yükleniyor!"}
                     </p>
 
@@ -161,6 +220,24 @@ export function TweetDetail(){
                 <button className="hover:bg-red-500 w-7 h-7 rounded-full flex justify-center items-center">
                   <i className="fa-solid fa-heart"></i>
              </button>
+             {comment.user.email === userEmail && (
+              <button 
+                className="hover:bg-blue w-7 h-7 rounded-full flex justify-center items-center"
+                onClick={() => handleEditComment(comment)} 
+                >
+                <i className="fa-regular fa-pen-to-square"></i>
+                </button>
+              )}
+
+{comment.user.email === userEmail && (
+    <button 
+        className="hover:bg-blue w-7 h-7 rounded-full flex justify-center items-center"
+        onClick={() => handleDeleteComment(comment.id, tweetId)}
+        
+    >
+        <i className="fa-solid fa-trash-can text-red-800"></i>
+    </button>
+)}
             </div>
           </div>
          </div>

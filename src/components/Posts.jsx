@@ -14,7 +14,7 @@ export function Posts() {
   const userEmail = localStorage.getItem('email');
   const history = useHistory();
   const [editingTweet, setEditingTweet] = useState(null);
-const [newTweetContent, setNewTweetContent] = useState("");
+  const [newTweetContent, setNewTweetContent] = useState("");
 
   const getGravatarUrl = (email) => {
     const emailHash = md5(email.trim().toLowerCase());
@@ -140,11 +140,11 @@ const [newTweetContent, setNewTweetContent] = useState("");
     {editingTweet && (
   <div 
     className="fixed inset-0 bg-gray-700 bg-opacity-50 flex justify-center items-center z-50 text-white"
-    onClick={() => setEditingTweet(null)} // Modal dışına tıklandığında kapanacak
+    onClick={() => setEditingTweet(null)}
   >
     <div 
       className="bg-gray-700 p-6 rounded-lg shadow-lg w-full max-w-lg" 
-      onClick={(e) => e.stopPropagation()} // Modal içine tıklanmasını engeller
+      onClick={(e) => e.stopPropagation()} 
     >
       <h2 className="text-2xl font-bold mb-4">Tweet'i Düzenle</h2>
       <textarea

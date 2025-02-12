@@ -118,5 +118,27 @@ export const updateTweet = async (userId, tweetId, tweetData) => {
     }
 };
 
+export const updateComment = async (userId,tweetId, commentId, tweetData) => {
+    try {
+        const response = await axios.put(`${API_BASE_URL}/comments/user/${userId}/tweet/${tweetId}/comment/${commentId}`, tweetData);
+        return response.data;
+    } catch (error) {
+        throw new Error("Tweet creation failed: " + error.response?.data?.message || error.message);
+    }
+};
+
+export const deleteComment = async (userId,tweetId, commentId) => {
+    try {
+        const response = await axios.delete(`${API_BASE_URL}/comments/user/${userId}/tweet/${tweetId}/comment/${commentId}`);
+        return response.data;
+    } catch (error) {
+        throw new Error("Comment deletion failed: " + (error.response?.data?.message || error.message));
+    }
+};
+
+
+
+
+
 
 
