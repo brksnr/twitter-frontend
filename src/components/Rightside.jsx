@@ -2,6 +2,7 @@ import { KimiTakipEtmeli } from "./KimiTakipEtmeli";
 import { NelerOluyor } from "./NelerOluyor";
 
 export function Rightside(){
+
     return (
         <>
         <div className="pl-6 pt-2 flex-col gap-4 hidden 2xl:flex">

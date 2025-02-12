@@ -1,4 +1,23 @@
+import { useEffect, useState } from "react";
+import { getAllUsers } from "../api";
+
 export function KimiTakipEtmeli(){
+
+        const [users , setUsers] = useState([]);
+    
+        useEffect(() => {
+                const fetchUsers = async () => {
+                  try {
+                    const data = await getAllUsers();
+                    setUsers(data);
+                    console.log( "bakalım:", data);
+                  } catch (err) {
+                    console.error(err);
+                  } finally {
+                  }
+                };
+                fetchUsers();
+              }, []);
     return(
         <>
         <div className="border border-gray-700 rounded-xl flex flex-col text-white gap-4 py-4">
