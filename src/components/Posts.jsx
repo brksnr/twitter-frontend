@@ -43,10 +43,10 @@ export function Posts() {
   if (error) return <p>{error}</p>;
 
   /* LİKE / DİSKLE */
-  const handleLike = async (tweet) => {
+  const handleLike = async (event,tweet) => {
+    event.stopPropagation(); 
     try {
       const tweetId = tweet.id; 
-
       if (isLikedByUser(tweet)) {
         await deleteLike(tweetId, userId);  
         console.log(`Tweet ${tweetId} unliked by user ${userId}`);
@@ -70,7 +70,8 @@ export function Posts() {
   /* LİKE / DİSKLE */
 
   /* retweet */
-  const handleReTweet = async (tweet) => {
+  const handleReTweet = async (event,tweet) => {
+    event.stopPropagation(); 
     try {
       const tweetId = tweet.id;
       if (isRetweetedByUser(tweet)) {
@@ -101,7 +102,8 @@ export function Posts() {
   /* GO DETAILS */
 
   /* DELETE TWEET */
-  const handleDeleteTweet = async (tweetId) => {
+  const handleDeleteTweet = async (event,tweetId) => {
+    event.stopPropagation(); 
     try {
       await deleteTweet(tweetId, userId);
       setLoading(true);
@@ -116,12 +118,14 @@ export function Posts() {
   /* DELETE TWEET */
 
   /* TWEET EDIT */
-  const handleEditTweet = (tweet) => {
+  const handleEditTweet = (event,tweet) => {
+    event.stopPropagation();
     setEditingTweet(tweet);
     setNewTweetContent(tweet.content); 
   };
 
-  const handleUpdateTweet = async () => {
+  const handleUpdateTweet = async (event) => {
+    event.stopPropagation(); 
     try {
       const tweetData = { content: newTweetContent };
       await updateTweet(userId, editingTweet.id, tweetData);  
@@ -210,7 +214,7 @@ export function Posts() {
               <div className="flex items-center">
                 <button
                   className={`hover:bg-blue w-7 h-7 rounded-full flex justify-center items-center ${isRetweetedByUser(tweet) ? 'text-green-500' : 'text-darkgray'}`}
-                  onClick={() => handleReTweet(tweet)}
+                  onClick={(e) => handleReTweet(e,tweet)}
                 >
                   <i className="fa-solid fa-retweet"></i>
                 </button>
@@ -219,7 +223,7 @@ export function Posts() {
               <div className="flex items-center">
                 <button
                   className={`hover:bg-blue w-7 h-7 rounded-full flex justify-center items-center ${isLikedByUser(tweet) ? 'text-red-500' : 'text-darkgray'}`}
-                  onClick={() => handleLike(tweet)}
+                  onClick={(e) => handleLike(e,tweet)}
                 >
                   <i className="fa-solid fa-heart"></i>
                 </button>
@@ -235,7 +239,7 @@ export function Posts() {
               {tweet.user.email === userEmail && (
                 <button 
                   className="hover:bg-blue w-7 h-7 rounded-full flex justify-center items-center"
-                  onClick={() => handleEditTweet(tweet)}
+                  onClick={(e) => handleEditTweet(e,tweet)}
                   >
                   <i className="fa-regular fa-pen-to-square"></i>
                 </button>
@@ -247,7 +251,7 @@ export function Posts() {
                 {tweet.user.email === userEmail && (
                   <button 
                     className="hover:bg-blue w-7 h-7 rounded-full flex justify-center items-center"
-                    onClick={() => handleDeleteTweet(tweet.id)}
+                    onClick={(e) => handleDeleteTweet(e,tweet.id)}
                   >
                     <i className="fa-solid fa-trash-can text-red-800"></i>
                   </button>
